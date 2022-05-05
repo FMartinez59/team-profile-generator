@@ -1,5 +1,8 @@
 const inquirer = require("inquirer");
 const Employee = require("./LIB/Employee");
+const Manager = require("./LIB/Manager");
+const Engineer = require("./LIB/Engineer");
+const Intern = require("./LIB/Intern")
 
 const promptManager = () => {
   return inquirer
@@ -25,11 +28,74 @@ const promptManager = () => {
         message: "What is the managers office number?",
       },
     ])
-    .then(function (answers) {
-      const person = new Employee(answers.manager, answers.manager2, answers.manager3, answers.manager4)
+    .then(function (manAnswers) {
+      const person = new Manager(manAnswers.manager, manAnswers.manager2, manAnswers.manager3, manAnswers.manager4)
       console.log(person);
     });
 };
+
+const promptEngineer = () => {
+    return inquirer 
+    .prompt([
+        {
+            type: "input",
+            name: "engineer",
+            message: "What is your Engineers name?",
+          },
+          {
+            type: "input",
+            name: "engineer2",
+            message: "What is the Engineers Employee ID?",
+          }, 
+          {
+            type: "input",
+            name: "engineer3",
+            message: "What is the Engineers email?",
+          }, 
+          {
+            type: "input",
+            name: "engineer4",
+            message: "What is the Engineers GitHub username?",
+          }, 
+    ])
+    .then(function (enginAnswers) {
+        const person = new Engineer(enginAnswers.engineer, enginAnswers.engineer2, enginAnswers.engineer3, enginAnswers.engineer4)
+        console.log(person);
+      });
+}
+
+const promptIntern = () => {
+    return inquirer 
+    .prompt([
+        {
+            type: "input",
+            name: "intern",
+            message: "What is your intern's name?",
+          },
+          {
+            type: "input",
+            name: "intern2",
+            message: "What is the interns Employee ID?",
+          }, 
+          {
+            type: "input",
+            name: "intern3",
+            message: "What is the interns email?",
+          }, 
+          {
+            type: "input",
+            name: "intern4",
+            message: "Where does the intern go to school?",
+          }, 
+    ])
+    .then(function (internAnswers) {
+        const person = new Intern(internAnswers.intern, internAnswers.intern2, internAnswers.intern3, internAnswers.intern4)
+        console.log(person);
+      });
+}
+
+
+
 //ask another questions if yes then run function that is another questions for person needed
 const init = () => {
   promptManager();
