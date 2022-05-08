@@ -109,8 +109,27 @@ const promptIntern = () => {
     });
 };
 
+const questionAfter = () => {
+  return inquirer
+  .prompt([
+    {
+      type: "list",
+      name: "newWorker",
+      message: "Who would you like to add?",
+      choices: ["intern", "engineer"]
+    }
+  ])
+  .then(function (questionAfterAnswers) {
+    
+  })
+}
+//need to ask questions after manager prompt
+//then give list for intern or engineer 
+//from list entry prompt next questions
+//need to store answers in variable
 //ask another questions if yes then run function that is another questions for person needed
 const init = () => {
   promptManager();
+
 };
 init();
