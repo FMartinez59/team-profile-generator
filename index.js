@@ -12,22 +12,12 @@ const teamMembers = {
 
 const idArray = [];
 
-function buildTeam() {
-  fs.writeFile("/dist/team.html", render(teamMembers), (err) => {
-    if (err) {
-      console.log(err);
-    }
-  });
-}
-
-
-
-const promptManager = () => {
-  return inquirer
+function createManager() {
+  inquirer
     .prompt([
       {
         type: "input",
-        name: "manager",
+        name: "managerName",
         validate: (answer) => {
           if (answer !== "") {
             return true;
@@ -37,8 +27,8 @@ const promptManager = () => {
       },
       {
         type: "input",
-        name: "manager2",
-        message: "What is the managers Employee ID?",
+        name: "managerId",
+        message: "what is the team manager's id",
         validate: (answer) => {
           const pass = answer.match(/^[1-9]\d*$/);
           if (pass) {
@@ -49,8 +39,8 @@ const promptManager = () => {
       },
       {
         type: "input",
-        name: "manager3",
-        message: "What is the managers email address?",
+        name: "managerEmail",
+        message: "what is the team manager's email",
         validate: (answer) => {
           const pass = answer.match(/\S+@\S+\.\S+/);
           if (pass) {
@@ -61,8 +51,8 @@ const promptManager = () => {
       },
       {
         type: "input",
-        name: "manager4",
-        message: "What is the managers office number?",
+        name: "managerOfficeNumber",
+        message: "what is the team manager's office number",
         validate: (answer) => {
           const pass = answer.match(/^[1-9]\d*$/);
           if (pass) {
@@ -72,137 +62,181 @@ const promptManager = () => {
         },
       },
     ])
-    .then((manAnswers) => {
+    .then((answers) => {
       const manager = new Manager(
-        manAnswers.manager,
-        manAnswers.manager2,
-        manAnswers.manager3,
-        manAnswers.manager4
+        answers.managerName,
+        answers.managerId,
+        answers.managerEmail,
+        answers.managerOfficeNumber
       );
-      console.log(manager);
       teamMembers.manager = manager;
-      idArray.push(manAnswers.manager2);
+      idArray.push(answers.managerId);
       createTeam();
     });
-};
-
-function createTeam() {
-  inquirer.prompt([
-    {
-      type: 'list',
-      name: 'choice',
-      message: 'Which team member would you like to add?',
-      choices: [
-        'Engineer',
-        'Intern',
-        'I do not want to add any more'
-      ]
-    }
-  ]).then((answers) => {
-    switch (answers.choice) {
-      case 'Engineer':
-        promptEngineer()
-        break
-      case 'Intern':
-        promptIntern()
-        break
-        default:
-          buildTeam();
-    }
-  })
 }
 
-const promptEngineer = () => {
-  return inquirer
-    .prompt([
-      {
-        type: "input",
-        name: "engineer",
-        message: "What is your Engineers name?",
-      },
-      {
-        type: "input",
-        name: "engineer2",
-        message: "What is the Engineers Employee ID?",
-        
-      },
-      {
-        type: "input",
-        name: "engineer3",
-        message: "What is the Engineers email?",
-      },
-      {
-        type: "input",
-        name: "engineer4",
-        message: "What is the Engineers GitHub username?",
-      },
-    ])
-    .then(function (enginAnswers) {
-      const engineer = new Engineer(
-        enginAnswers.engineer,
-        enginAnswers.engineer2,
-        enginAnswers.engineer3,
-        enginAnswers.engineer4
-      );
-      teamMembers.engineers.push(manager);
-      idArray.push(enginAnswers.engineer2)
-      console.log(person);
-    });
-};
-
-const promptIntern = () => {
-  return inquirer
-    .prompt([
-      {
-        type: "input",
-        name: "intern",
-        message: "What is your intern's name?",
-      },
-      {
-        type: "input",
-        name: "intern2",
-        message: "What is the interns Employee ID?",
-      },
-      {
-        type: "input",
-        name: "intern3",
-        message: "What is the interns email?",
-      },
-      {
-        type: "input",
-        name: "intern4",
-        message: "Where does the intern go to school?",
-      },
-    ])
-    .then(function (internAnswers) {
-      const person = new Intern(
-        internAnswers.intern,
-        internAnswers.intern2,
-        internAnswers.intern3,
-        internAnswers.intern4
-      );
-      console.log(person);
-    });
-};
-
-const questionAfter = () => {
-  return inquirer
+function createTeam() {
+  inquirer
     .prompt([
       {
         type: "list",
-        name: "newWorker",
-        message: "Who would you like to add?",
-        choices: ["intern", "engineer"],
+        name: "choice",
+        message: "Which type of team member would you like to add?",
+        choices: ["Engineer", "Intern", "I do not want to add any more"],
       },
     ])
-    .then(function (questionAfterAnswers) {});
-};
-//need to ask questions after manager prompt
-//then give list for intern or engineer
-//from list entry prompt next questions
-//need to store answers in variable
-//ask another questions if yes then run function that is another questions for person needed
-const init = () => {
-  promptManager();
-};
-init();
+    .then((answers) => {
+      switch (answers.choice) {
+        case "Engineer":
+          addEngineer();
+          break;
+        case "Intern":
+          addIntern();
+          break;
+        default:
+          buildTeam();
+      }
+    });
+}
+
+function addEngineer() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "name",
+        validate: (answer) => {
+          if (answer !== "") {
+            return true;
+          }
+          return "Please enter at least one character";
+        },
+      },
+      {
+        type: "input",
+        name: "id",
+        message: "what is the id",
+        validate: (answer) => {
+          const pass = answer.match(/^[1-9]\d*$/);
+          if (pass) {
+            if (idArray.includes(answer)) {
+              return "This id is already taken";
+            } else {
+              return true;
+            }
+          }
+          return "Please enter a positive number greater than 0";
+        },
+      },
+      {
+        type: "input",
+        name: "email",
+        message: "what is the email",
+        validate: (answer) => {
+          const pass = answer.match(/\S+@\S+\.\S+/);
+          if (pass) {
+            return true;
+          }
+          return "Please enter a valid email";
+        },
+      },
+      {
+        type: "input",
+        name: "github",
+        message: "what is the github",
+        validate: (answer) => {
+          if (answer !== "") {
+            return true;
+          }
+          return "Please enter at least one character";
+        },
+      },
+    ])
+    .then((answers) => {
+      const engineer = new Engineer(
+        answers.name,
+        answers.id,
+        answers.email,
+        answers.github
+      );
+      teamMembers.engineers.push(engineer);
+      idArray.push(answers.id);
+      createTeam();
+    });
+}
+
+function addIntern() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "name",
+        validate: (answer) => {
+          if (answer !== "") {
+            return true;
+          }
+          return "Please enter at least one character";
+        },
+      },
+      {
+        type: "input",
+        name: "id",
+        message: "what is the id",
+        validate: (answer) => {
+          const pass = answer.match(/^[1-9]\d*$/);
+          if (pass) {
+            if (idArray.includes(answer)) {
+              return "This id is already taken";
+            } else {
+              return true;
+            }
+          }
+          return "Please enter a positive number greater than 0";
+        },
+      },
+      {
+        type: "input",
+        name: "email",
+        message: "what is the email",
+        validate: (answer) => {
+          const pass = answer.match(/\S+@\S+\.\S+/);
+          if (pass) {
+            return true;
+          }
+          return "Please enter a valid email";
+        },
+      },
+      {
+        type: "input",
+        name: "school",
+        message: "what is the school",
+        validate: (answer) => {
+          if (answer !== "") {
+            return true;
+          }
+          return "Please enter at least one character";
+        },
+      },
+    ])
+    .then((answers) => {
+      const intern = new Intern(
+        answers.name,
+        answers.id,
+        answers.email,
+        answers.school
+      );
+      teamMembers.interns.push(intern);
+      idArray.push(answers.id);
+      createTeam();
+    });
+}
+
+function buildTeam() {
+  fs.writeFile("dist/team.html", render(teamMembers), (err) => {
+    if (err) {
+      console.log(err);
+    }
+  });
+}
+
+createManager();
