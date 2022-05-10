@@ -1,15 +1,15 @@
-const inquirer = require("inquirer");
-const Manager = require("./LIB/Manager");
-const Engineer = require("./LIB/Engineer");
-const Intern = require("./LIB/Intern");
+const Manager = require("./lib/Manager");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
 const render = require("./src/page-template");
+const inquirer = require("inquirer");
 const fs = require("fs");
+
 const teamMembers = {
   manager: null,
   engineers: [],
-  intern: [],
+  interns: [],
 };
-
 const idArray = [];
 
 function createManager() {
